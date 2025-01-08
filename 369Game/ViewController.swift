@@ -44,17 +44,21 @@ class ViewController: UIViewController {
         numbersLabel.textColor = .gray
         numbersLabel.textAlignment = .center
         numbersLabel.numberOfLines = 0
+        numbersLabel.adjustsFontSizeToFitWidth = true
         numbersLabel.frame.size = numbersLabel.intrinsicContentSize
         
         clapResultLabel.text = "숫자 \(selectedNumber)까지 총 박수는\n\(clapCount)번 입니다."
         clapResultLabel.font = .systemFont(ofSize: 32, weight: .bold)
+        clapResultLabel.textColor = .black
         clapResultLabel.textAlignment = .center
         clapResultLabel.numberOfLines = 0
+        clapResultLabel.adjustsFontSizeToFitWidth = true
+        clapResultLabel.frame.size = numbersLabel.intrinsicContentSize
         clapResultLabel.isHidden = true
     }
     
     func makeNumberArray() {
-        for index in 1...100 {
+        for index in 1...1000 {
             numberList.append(index)
         }
         numberList.reverse()
@@ -88,7 +92,8 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        100
+        print(numberList.count) // ViewDidLoad 가 먼저인가?
+        return numberList.count
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
