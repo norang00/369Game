@@ -16,12 +16,7 @@ class ViewController: UIViewController {
 
     var pickerView = UIPickerView()
     var numberList: [Int] = []
-    var selectedNumber: Int = 0 {
-        didSet {
-            clapResultLabel.text = "숫자 \(selectedNumber)까지 총 박수는 \(clapCount)번 입니다."
-        }
-    }
-    
+    var selectedNumber: Int = 0
     var clapCount: Int = 0
     
     override func viewDidLoad() {
@@ -44,17 +39,18 @@ class ViewController: UIViewController {
         inputTextfield.font = .systemFont(ofSize: 24, weight: .medium)
         inputTextfield.textAlignment = .center
         
-        numbersLabel.text = "숫자들"
+        numbersLabel.text = "입력한 숫자에 따른 박수를 알려드릴게요"
         numbersLabel.font = .systemFont(ofSize: 22, weight: .light)
         numbersLabel.textColor = .gray
         numbersLabel.textAlignment = .center
         numbersLabel.numberOfLines = 0
         numbersLabel.frame.size = numbersLabel.intrinsicContentSize
         
-        clapResultLabel.text = "숫자 \(selectedNumber)까지 총 박수는 \(clapCount)번 입니다."
+        clapResultLabel.text = "숫자 \(selectedNumber)까지 총 박수는\n\(clapCount)번 입니다."
         clapResultLabel.font = .systemFont(ofSize: 32, weight: .bold)
         clapResultLabel.textAlignment = .center
         clapResultLabel.numberOfLines = 0
+        clapResultLabel.isHidden = true
     }
     
     func makeNumberArray() {
@@ -78,7 +74,10 @@ extension ViewController: UITextFieldDelegate {
 
     @IBAction func tapGestureRecognizerTapped(_ sender: UITapGestureRecognizer) {
         view.endEditing(true)
+        clapCount = 0
         inputTextfield.text = ""
+        numbersLabel.text = "입력한 숫자에 따른 박수를 알려드릴게요"
+        clapResultLabel.isHidden = true
     }
 }
 
@@ -102,6 +101,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let item = numberList[row]
+        clapCount = 0
         inputTextfield.text = String(item)
         selectedNumber = item
         drawNumbers(item)
@@ -114,13 +114,29 @@ extension ViewController {
     func drawNumbers(_ selectedNumber: Int) {
         var numbersText: String = ""
         for index in 1...selectedNumber {
-            numbersText += "\(index), "
-            
-            if index == selectedNumber {
-                numbersText += "\(index)"
+            if index != selectedNumber {
+                numbersText += check369(index) + ", "
+            } else {
+                numbersText += check369(index)
             }
         }
+        clapResultLabel.isHidden = false
         numbersLabel.text = numbersText
+        clapResultLabel.text = "숫자 \(selectedNumber)까지 총 박수는\n\(clapCount)번 입니다."
+    }
+    
+    func check369(_ number:Int) -> String {
+        let check: [Character] = String(number).map { $0 }
+        var result = ""
+        for index in 0..<check.count {
+            if ["3","6","9"].contains(check[index]) {
+                result += "👏"
+                clapCount += 1
+            } else {
+                result += "\(check[index])"
+            }
+        }
+        return result
     }
     
 }
